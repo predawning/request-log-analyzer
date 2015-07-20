@@ -52,7 +52,15 @@ module RequestLogAnalyzer
       # This function can be overridden to rewrite the path for better categorization in the
       # reports.
       def convert_path(value, _definition)
-        value
+        if (/\/api\/v1\/portfolios\/\d+\/\w+\/\d+\//.match(value))
+            value.gsub(%r{(/api/v1/portfolios/)\d+(/\w+/)\d+/}, '\1{pk}\2{pk2}/')
+        else
+            if (/\/api\/v1\/portfolios\/\d+\/\w?/.match(value))
+                value.gsub(%r{(/api/v1/portfolios/)\d+/(\w?)}, '\1{pk}/\2')
+            else
+                value
+            end
+        end
       end
 
       # Converts :eval field, which should evaluate to a hash.
